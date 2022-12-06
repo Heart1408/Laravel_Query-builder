@@ -56,7 +56,7 @@
                     <td>{{$key+1}}</td>
                     <td>{{$item->name}}</td>
                     <td>{{$item->email}}</td>
-                    <td>{{$item->group_name}}</td>
+                    <td>{{$item->getGroup($item->id)}}</td>
                     <td>{!! $item->status==0?'<button class="btn btn-danger btn-sm">Inactive</button>':
                         '<button class="btn btn-success btn-sm">Active</button>' !!}</td>
                     <td>{{$item->created_at}}</td>

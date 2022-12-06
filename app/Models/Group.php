@@ -4,19 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
 
 class Group extends Model
 {
     use HasFactory;
 
-    protected $table = 'groups';
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 
-    public function getAll(){
-        $groups = DB::table($this->table)
-        ->orderBy('name', 'ASC')
-        ->get();
-
-        return $groups;
+    public function getAll()
+    {
+        return $this->orderBy('name')->get();
     }
 }

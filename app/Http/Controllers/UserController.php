@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Users;
+use App\Models\User;
 use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
@@ -13,10 +13,11 @@ class UserController extends Controller
     const _PER_PAGE = 2;
 
     public function __construct() {
-        $this->users = new Users();
+        $this->users = new User();
     }
 
     public function index(Request $request){
+        // $this->users->eloquent();
         $filters = [];
         $keyword = null;
        
