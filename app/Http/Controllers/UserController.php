@@ -8,13 +8,17 @@ use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {
-    private $users;
+    // private $users;
 
     const _PER_PAGE = 2;
 
-    public function __construct() {
-        $this->users = new User();
+    public static function users() {
+        return new User();
     }
+
+    // public function __construct() {
+    //     $this->users = self::users();
+    // }
 
     public function index(Request $request){
         // $this->users->eloquent();
@@ -58,7 +62,7 @@ class UserController extends Controller
             'sortBy' => $sortBy,
             'sortType' => $sortType
         ];
-        $usersList = $this->users->getAllUsers($filters, $keyword, $sortArr, self::_PER_PAGE);
+        $usersList = $this->users()->getAllUsers($filters, $keyword, $sortArr, self::_PER_PAGE);
 
         return view('clients.users.lists', compact('usersList',  'sortType'));
     }
@@ -77,14 +81,14 @@ class UserController extends Controller
             'status' => $request->status,
             'created_at' => date('Y-m-d H:i:s')
         ];
-        $this->users->addUser($dataInsert);
+        $this->users()->addUser($dataInsert);
 
         return redirect()->route('users.index')->with('msg', 'Add user success!');
     }
 
     public function getEdit(Request $request, $id=0) {
         if (!empty($id)) {
-            $userDetail = $this->users->getDetail($id);
+            $userDetail = $this->users()->getDetail($id);
             // dd($userDetail);
             if (!empty($userDetail[0])) {
                 $request->session()->put('id', $id);
@@ -115,17 +119,17 @@ class UserController extends Controller
             'status' => $request->status,
             'updated_at' => date('Y-m-d H:i:s')
         ];
-        $this->users->updateUser($dataUpdate, $id);
+        $this::users()->updateUser($dataUpdate, $id);
 
         return back()->with('msg', 'Update success!');
     }
 
     public function delete($id=0) {
         if (!empty($id)) {
-            $userDetail = $this->users->getDetail($id);
+            $userDetail = $this->users()->getDetail($id);
             // dd($userDetail);
             if (!empty($userDetail[0])) {
-                $deleteStatus = $this->users->deleteUser($id);
+                $deleteStatus = $this->users()->deleteUser($id);
                 if ($deleteStatus) {
                     $msg = 'Delete success!';
                 } else {

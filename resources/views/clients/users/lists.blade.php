@@ -28,7 +28,7 @@
                 </select>
             </div>
             <div class="col-4">
-                <input type="search" name="keyword" class="form-control" 
+                <input type="text" name="keyword" class="form-control" 
                 placeholder="Key search..." value="{{ request()->keyword }}">
             </div>
             <div class="col-2">

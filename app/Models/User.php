@@ -42,16 +42,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function groups()
+    public function group()
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
 
     public function getGroup($user_id) 
     {
-        $group =  $this->find($user_id)->groups()->first();
+        $group =  $this->find($user_id)->group()->first();
         if (is_null($group)) return '-';
-        return $group->name;
+        return $this->group->name;
     }
 
     public function getAllUsers($filters = [], $keyword = null, $sortByArr = null, $perPage = null)
