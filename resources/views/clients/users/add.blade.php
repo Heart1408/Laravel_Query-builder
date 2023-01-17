@@ -9,7 +9,7 @@
         <div class="alert alert-danger">Input invalidate!</div>
     @endif
     <h1>Add user</h1>
-    <form action="" method="POST">
+    <form action="{{ route('user.store') }}" method="POST">
     @csrf
         <div class="mb-3">
             <label for="">Name</label>
@@ -50,7 +50,7 @@
             @enderror
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="{{route('users.index')}}" class="btn btn-warning">Cancel</a>
+        <a href="{{route('user.index')}}" class="btn btn-warning">Cancel</a>
     </form>
     <hr>
 @endsection

@@ -6,7 +6,7 @@
         <div class="alert alert-success">{{session('msg')}}</div>
     @endif
     <h1>List user</h1>
-    <a href="{{route('users.add')}}" class="btn btn-primary">Add user</a>
+    <a href="{{route('user.create')}}" class="btn btn-primary">Add user</a>
     <hr>
     <form action="" method="GET" class="mb-3">
         <div class="row">
@@ -60,8 +60,14 @@
                     <td>{!! $item->status==0?'<button class="btn btn-danger btn-sm">Inactive</button>':
                         '<button class="btn btn-success btn-sm">Active</button>' !!}</td>
                     <td>{{$item->created_at}}</td>
-                    <td><a href="{{ route('users.edit', ['id'=>$item->id]) }}" class="btn btn-warning btn-sm">Edit</a></td>
-                    <td><a onclick="return confirm('Are you sure you want to delete!')" href="{{ route('users.delete', ['id'=>$item->id]) }}" class="btn btn-danger btn-sm">Delete</a></td>
+                    <td><a href="{{ route('user.edit', ['user'=>$item->id]) }}" class="btn btn-warning btn-sm">Edit</a></td>
+                    <td>
+                        <form onclick="return confirm('Are you sure you want to delete!')" method="POST" action="{{ route('user.destroy', ['user'=>$item->id]) }}">
+                            @csrf
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
             @else

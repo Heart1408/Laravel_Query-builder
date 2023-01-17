@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
@@ -20,6 +20,11 @@ class UserController extends Controller
     //     $this->users = self::users();
     // }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request){
         // $this->users->eloquent();
         $filters = [];
@@ -67,80 +72,99 @@ class UserController extends Controller
         return view('clients.users.lists', compact('usersList',  'sortType'));
     }
 
-    public function add(){
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
         $allGroups = getAllGroups();
 
         return view('clients.users.add', compact('allGroups'));
     }
 
-    public function postAdd(UserRequest $request){
-        $dataInsert = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'group_id' => $request->group_id,
-            'status' => $request->status,
-            'created_at' => date('Y-m-d H:i:s')
-        ];
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(UserRequest $request)
+    {
+        $dataInsert =$request->merge(['created_at' => date('Y-m-d H:i:s')])
+                    ->only(['name', 'email', 'group_id', 'status', 'created_at']);
         $this->users()->addUser($dataInsert);
 
-        return redirect()->route('users.index')->with('msg', 'Add user success!');
+        return redirect()->route('user.index')->with('msg', 'Add user success!');
     }
 
-    public function getEdit(Request $request, $id=0) {
-        if (!empty($id)) {
-            $userDetail = $this->users()->getDetail($id);
-            // dd($userDetail);
-            if (!empty($userDetail[0])) {
-                $request->session()->put('id', $id);
-                $userDetail = $userDetail[0];
-            } else {
-                return redirect()->route('users.index')->with('msg', 'User does not exist!');
-            }
-        } else {
-            return redirect()->route('users.index')->with('msg', 'User does not exist!');
-        }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $user=0)
+    {
+        if (empty($user)) {
+            return redirect()->route('user.index')->with('msg', 'User does not exist!');
+        } 
+        $request->session()->put('id', $user->id);
         $allGroups = getAllGroups();
 
-        return view('clients.users.edit', compact('userDetail', 'allGroups'));
+        return view('clients.users.edit', compact('allGroups', 'user'));
     }
 
-    public function postEdit(UserRequest $request) {
-        // dd(session('id'));
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UserRequest $request)
+    {
         $id = session('id');
         if (empty($id)) {
             return back()->with('msg', 'User does not exist!');
         }
-
-        $dataUpdate = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'group_id' => $request->group_id,
-            'status' => $request->status,
-            'updated_at' => date('Y-m-d H:i:s')
-        ];
+        $dataUpdate = $request->merge(['updated_at' => date('Y-m-d H:i:s')])
+                    ->only(['name', 'email', 'group_id', 'status', 'updated_at']);
         $this::users()->updateUser($dataUpdate, $id);
 
         return back()->with('msg', 'Update success!');
     }
 
-    public function delete($id=0) {
-        if (!empty($id)) {
-            $userDetail = $this->users()->getDetail($id);
-            // dd($userDetail);
-            if (!empty($userDetail[0])) {
-                $deleteStatus = $this->users()->deleteUser($id);
-                if ($deleteStatus) {
-                    $msg = 'Delete success!';
-                } else {
-                    $msg = 'Delete fail!';
-                }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($user)
+    {
+        if (!empty($user)) {
+            $deleteStatus = $this->users()->deleteUser($user->id);
+            if ($deleteStatus) {
+                $msg = 'Delete success!';
             } else {
-                $msg = 'User does not exist!';
+                $msg = 'Delete fail!';
             }
         } else {
             $msg = 'User does not exist!';
         }
-        return redirect()->route('users.index')->with('msg', $msg);
+        
+        return redirect()->route('user.index')->with('msg', $msg);
     }
 }
